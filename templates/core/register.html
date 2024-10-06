@@ -1,0 +1,46 @@
+{% extends 'core/base.html' %}
+
+{% block top %}
+<div class="self-center flex flex-col w-full mt-10 mb-4 px-4 items-center justify-center max-w-sm gap-4">
+    <p class="text-4xl font-serif font-medium w-full">Signup</p>
+    <p class="w-full mb-10">Welcome to Style Hive, a clothing store with Virtual TryOn and Wardrobe Management</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="self-center flex flex-col h-full w-full max-w-md px-6 gap-6 items-center">
+    <form method="post" enctype="multipart/form-data" class="flex flex-col w-full bg-white items-center rounded-lg py-10">
+        {% csrf_token %} 
+        <p class="font-medium text-xl">To get started, please signup</p>
+        <p class="font-medium text-md mb-10">or go back <span class="text-blue-600"><a href="{% url 'index' %}">to home</a></span>:</p>
+        {% if messages %}
+            {% for message in messages %}
+                <p class="font-bold text-red-800 mb-4">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+        <div class="mb-3">
+            <p class="font-serif text-xl">Name</p>
+            <input name="name" class="bg-gray-300 p-2 px-6 rounded-full" id="name" placeholder="Your Name" required>    
+        </div>
+        <div class="mb-3">
+            <p class="font-serif text-xl">Email</p>
+            <input type="email" name="email" class="bg-gray-300 p-2 px-6 rounded-full" id="email" placeholder="Your Email" required>    
+        </div>
+        <div class="mb-3">
+            <p class="font-serif text-xl">Password</p>
+            <input type="password" name="password" class="bg-gray-300 p-2 px-6 rounded-full" id="password" placeholder="Your Password" required>
+        </div>
+        <div class="mb-3">
+            <p class="font-serif text-xl">Confirm Password</p>
+            <input type="password" name="confirm_password" class="bg-gray-300 p-2 px-6 rounded-full" id="confirm_password" placeholder="Retype your Password" required>
+        </div>
+        <button type="submit" class="bg-gray-900 p-3 px-8 text-white rounded-full">Submit</button>
+    </form>
+</div>
+{% endblock %}
+
+{% block bottom %}
+<div class="self-center flex flex-row w-full bg-black items-center justify-between p-2 px-6 text-gray-400 max-w-md">
+    <p class="p-6 w-full text-center text-xl font-medium font-serif">Already have a account? <span class="font-sans font-bold"><a href="{% url 'login' %}">Login</a></span></p>
+</div>  
+{% endblock %}

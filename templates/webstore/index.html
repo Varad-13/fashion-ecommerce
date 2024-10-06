@@ -20,7 +20,7 @@ Home
 {% endblock %}
 
 {% block content %}
-<div class="flex flex-col overflow-y-auto h-full w-full px-6 gap-6 items-center justify-start">
+<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md px-6 gap-6 items-center">
     <div class="flex flex-row h-36 max-w-sm w-full flex-shrink-0 overflow-x-auto items-center gap-2">
         <div class="h-full w-72 rounded-3xl bg-gray-900 flex-shrink-0"></div>
         <div class="h-full w-72 rounded-3xl bg-gray-900 flex-shrink-0"></div>
@@ -98,7 +98,7 @@ Home
 </div>
 {% endblock %}
     
-{% block nav %}
+{% block bottom %}
 <div class="self-center flex flex-row w-full bg-black items-center justify-between p-2 px-6 text-gray-400 max-w-md">
     <a class="p-4 px-3 rounded-xl" href="{% url 'index' %}">
         <span class="material-symbols-outlined text-white">
@@ -120,10 +120,18 @@ Home
             guardian
         </span>
     </a>
-    <a class="p-2 px-3 rounded-xl" href="{% url 'index' %}">
+    {% if request.user.is_authenticated %}
+    <a class="p-2 px-3 rounded-xl" href="{% url 'logout' %}">
+        <span class="material-symbols-outlined">
+            logout
+        </span>
+    </a>
+    {% else %}
+    <a class="p-2 px-3 rounded-xl" href="{% url 'login' %}">
         <span class="material-symbols-outlined">
             account_circle
         </span>
     </a>
+    {% endif %}
 </div>
 {% endblock %}
