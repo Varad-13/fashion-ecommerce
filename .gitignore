@@ -3,3 +3,4 @@ migrations
 media
 venv
 db.sqlite3
+static/
