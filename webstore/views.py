@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
 from .models import *
 
@@ -24,9 +24,27 @@ class index(View):
 class categories(View):
     def get(self, request):
         categories = Category.objects.all()
-        
         return render(request, 'webstore/categories.html', {'categories':categories})
-    
+
+class category(View):
+    def get(self, request, category_slug):
+        category = get_object_or_404(Category, slug=category_slug)
+        context = {}
+        context["category"] = category
+
+        return render(request, 'webstore/category.html', context)
+
+class target(View):
+    def get(self, request, target):
+        targets = ["Men", "Women", "Unisex", "Children"]
+        context = {}
+        for t in targets:
+            if t.lower() == target.lower():
+                products = ProductItem.objects.filter(target=t)
+                context["target"] = t
+                context["products"] = products
+        return render(request, 'webstore/target.html', context)
+
 class product(View):
     def get(self, request, product_id):
         product = ProductItem.objects.get(id=product_id)

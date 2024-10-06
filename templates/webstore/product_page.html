@@ -5,8 +5,8 @@ Home
 {% endblock %}
 
 {% block content %}
-<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md gap-6 items-center">
-    <div style="background: linear-gradient(to bottom, #ffe7b6, #ccab6a);" class="flex flex-col items-center justify-center rounded-b-3xl">
+<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md gap-6 items-center pb-6">
+    <div style="background: linear-gradient(to bottom, #ffe7b6, #ccab6a);" class="flex flex-col w-full items-center justify-center rounded-b-3xl">
         <div class="flex justify-between w-full px-6 pt-6">
             <button onclick="goBack()">
                 <span class="material-symbols-outlined bg-white p-3 rounded-full">
@@ -20,11 +20,11 @@ Home
             </button>
         </div>
         
-        <img class="w-full rounded-b-3xl object-cover" src="{{product.product_image.url}}">
+        <img class="max-w-xs px-4 pb-4 h-full rounded-b-3xl object-contain" src="{{product.product_image.url}}">
     </div>
     <div class="flex w-full flex-row justify-between items-start px-6">
         <div>
-            <p class="font-semibold font-serif text-2xl">{{product.product_name}}</p>
+            <p class="font-semibold font-serif text-2xl mr-3">{{product.product_name}}</p>
             <p class="font-medium text-lg">
                 {{product.target}}
             </p>
