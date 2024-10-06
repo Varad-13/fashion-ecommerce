@@ -53,3 +53,34 @@ class product(View):
         context['product'] = product
         context['avatars'] = avatars
         return render(request, 'webstore/product_page.html', context)
+    
+
+class tryon_avatar(View):
+    def get(self, request, product_id):
+        product = ProductItem.objects.get(id=product_id)
+        avatars = VirtualModel.objects.all()
+        context = {}
+        context['product'] = product
+        context['avatars'] = avatars
+        return render(request, 'webstore/virtual_try_on.html', context)
+    
+    def post(self, request):
+        product_id = request.POST.get('product')
+        model_id = request.POST.get('avatar')
+        model = VirtualModel.objects.get(model_name=model_id)
+        product = ProductItem.objects.get(id=product_id)
+        if VirtualPhotos.objects.filter(model=model, product=product).exists():
+            image = VirtualPhotos.objects.get(model=model, product=product)
+            return image.url
+        else:
+            pass
+
+class get_image(View):
+    def get(self, request, product_id, model_id):
+        model = VirtualModel.objects.get(model_name=model_id)
+        product = ProductItem.objects.get(id=product_id)
+        if VirtualPhotos.objects.filter(model=model, product=product).exists():
+            image = VirtualPhotos.objects.get(model=model, product=product)
+            return render(request, 'partials/image', image) 
+        else:
+            return render(request, 'partials/loading')

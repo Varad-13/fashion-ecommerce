@@ -16,8 +16,8 @@ Home
         <a href="{% url 'product' product.id %}">
             <div class="flex flex-col h-full w-full flex-shrink-0">
                 <div class="flex h-auto w-full flex-shrink-0">
-                    {% if product.virtual_photos.first %}
-                    <img class="h-auto w-auto rounded-3xl object-cover" src="{{product.virtual_photos.first.photo.url}}">
+                    {% if product.virtual_photos %}
+                    <img class="h-auto w-auto rounded-3xl object-cover" src="{{product.virtual_photos.photo.url}}">
                     {% else %}
                     <img class="h-auto w-auto rounded-3xl object-contain" style="background: linear-gradient(to bottom, #ededed, #cdcdcd);" src="{{product.product_image.url}}">
                     {% endif %}

@@ -29,10 +29,10 @@ class VirtualModel(models.Model):
 
 class VirtualPhotos(models.Model):
     photo = models.ImageField(upload_to='generated-photos/')
-    model = models.ForeignKey(VirtualModel, on_delete=models.CASCADE, related_name='photo')
+    model = models.OneToOneField(VirtualModel, on_delete=models.CASCADE, related_name='photo')
     product = models.ForeignKey(ProductItem, on_delete=models.CASCADE, related_name='virtual_photos')
 
 class UserPhotos(models.Model):
     photo = models.ImageField(upload_to='user-photos/')
-    user = models.ForeignKey(Userprofile, on_delete=models.CASCADE, related_name='user_tryon')
-    product = models.ForeignKey(ProductItem, on_delete=models.CASCADE, related_name='user_photos')
+    user = models.OneToOneField(Userprofile, on_delete=models.CASCADE, related_name='user_tryon')
+    product = models.OneToOneField(ProductItem, on_delete=models.CASCADE, related_name='user_photos')
