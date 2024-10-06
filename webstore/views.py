@@ -71,7 +71,7 @@ class tryon_avatar(View):
         product = ProductItem.objects.get(id=product_id)
         if VirtualPhotos.objects.filter(model=model, product=product).exists():
             image = VirtualPhotos.objects.get(model=model, product=product)
-            return image.url
+            return render(request, 'partials/image', image)
         else:
             pass
 
