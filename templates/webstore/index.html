@@ -5,7 +5,7 @@ Home
 {% endblock %}
 
 {% block top %}
-<div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-center max-w-sm">
+<div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-center max-w-md">
     <input 
         type="text" 
         placeholder="Search..." 
@@ -20,80 +20,61 @@ Home
 {% endblock %}
 
 {% block content %}
-<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md px-6 gap-6 items-center">
+<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md px-6 gap-6 items-center pb-6">
     <div class="flex flex-row h-36 max-w-sm w-full flex-shrink-0 overflow-x-auto items-center gap-2">
-        <div class="h-full w-72 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-        <div class="h-full w-72 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-        <div class="h-full w-72 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-        <div class="h-full w-72 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-        <div class="h-full w-72 rounded-3xl bg-gray-900 flex-shrink-0"></div>
+        {% for category in categories %}
+        <div class="h-full w-72 flex-shrink-0">
+            <img class="h-full w-full rounded-3xl" src="{{category.thumbnail.url}}">
+        </div>
+        {% endfor %}
     </div>
     <div class="flex flex-col w-full flex-shrink-0 gap-2">
         <p class="text-3xl font-serif font-bold">Flash Sale</p>
         <div class="flex flex-row h-auto max-w-sm w-full flex-shrink-0 overflow-x-auto items-center gap-2">
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-40 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-40 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-40 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
+            {% for product in sales %}
+            <a href="{% url 'product' product.product.id %}" class="h-full w-44 flex-shrink-0">
+                <div class="h-44 w-44 flex-shrink-0">
+                    <img class="h-auto w-auto rounded-3xl object-cover" style="background: linear-gradient(to bottom, #ffe7b6, #ccab6a);" src="{{product.product.product_image.url}}">
+                </div>
+                <p class="font-semibold font-serif text-lg ms-1">{{ product.product.product_name }}</p>
+                <p class="font-bold text-lg ms-1">${{ product.price }}</p>
+            </a>
+            {% endfor %}
         </div>
     </div>
     <div class="flex flex-col w-full flex-shrink-0 gap-2">
+
         <div class="flex items-center justify-between">
             <p class="text-3xl font-serif font-bold">Popular</p>
         </div>
+        {% for target, items in products.items %}
         <div class="flex items-center justify-between">
-            <p class="text-xl font-serif font-thin">Men</p>
+            <p class="text-2xl font-serif">{{target}}</p>
             <a href="" class="text-yellow-400 font-medium">See all</a>
         </div>
-        <div class="flex flex-row h-auto max-w-sm w-full flex-shrink-0 overflow-x-auto items-center gap-2">
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-60 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-60 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-60 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-        </div>
-        <div class="flex items-center justify-between mt-6">
-            <p class="text-xl font-serif font-thin">Men</p>
-            <a href="" class="text-yellow-400 font-medium">See all</a>
-        </div>
-        <div class="flex flex-row h-auto max-w-sm w-full flex-shrink-0 overflow-x-auto items-center gap-2">
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-60 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-60 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-            <div class="h-full w-40 flex-shrink-0">
-                <div class="h-60 w-40 rounded-3xl bg-gray-900 flex-shrink-0"></div>
-                <p class="text-xl ms-1">Product Name</p>
-                <p class="font-serif text-xl font-bold ms-1">$299</p>
-            </div>
-        </div>
+            {% for product in items %}
+            <a href="{% url 'product' product.id %}">
+                <div class="flex flex-row h-auto max-w-sm w-full flex-shrink-0 overflow-x-auto items-center gap-2 mb-6">
+                    <div class="h-full w-40 flex-shrink-0">
+                        <div class="flex h-60 w-44 flex-shrink-0">
+                            {% if product.virtual_photos %}
+                            <img class="h-auto w-auto rounded-3xl object-cover" src="{{product.virtual_photos.first.photo.url}}">
+                            {% else %}
+                            <img class="h-auto w-auto rounded-3xl object-contain" style="background: linear-gradient(to bottom, #ffe7b6, #ccab6a);" src="{{product.product_image.url}}">
+                            {% endif %}
+                        </div>
+                        <p class="font-semibold text-xl ms-1">{{product.product_name}}</p>
+                        {% if product.sale %}
+                        <p class="text-sm ms-1 font-medium line-through">${{product.price}}</p>
+                        <p class="text-lg font-bold ms-1">${{product.sale.price}}</p>
+                        {% else %}
+                        <p class="text-lg font-bold ms-1">${{product.price}}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        {% endfor %}
     </div>
 </div>
 {% endblock %}
@@ -105,17 +86,17 @@ Home
             home
         </span>
     </a>
-    <a class="p-2 px-3 rounded-xl" href="{% url 'index' %}">
+    <a class="p-2 px-3 rounded-xl" href="{% url 'categories' %}">
         <span class="material-symbols-outlined">
             dataset
         </span>
     </a>
-    <a class="p-2 px-3 rounded-xl" href="{% url 'index' %}">
+    <a class="p-2 px-3 rounded-xl">
         <span class="material-symbols-outlined text-gray-700">
             forum
         </span>
     </a>
-    <a class="p-2 px-3 rounded-xl" href="{% url 'index' %}">
+    <a class="p-2 px-3 rounded-xl">
         <span class="material-symbols-outlined text-gray-700">
             guardian
         </span>
