@@ -54,6 +54,9 @@ class product(View):
         context['avatars'] = avatars
         return render(request, 'webstore/product_page.html', context)
     
+class search(View):
+    def get(self, request, search_term):
+        products = ProductItem.objects.filter()    
 
 class tryon_avatar(View):
     def get(self, request, product_id):

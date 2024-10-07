@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-Home
+{{product.product_name}}
 {% endblock %}
 
 {% block content %}
@@ -33,9 +33,9 @@ Home
             </p>
         </div>
         {% if product.sale %}
-        <p><span class="text-2xl ms-1 line-through text-gray-600 me-2">${{product.price}}</span><span class="text-2xl font-bold">${{product.sale.price}}</span></p>
+        <p><span class="text-2xl ms-1 line-through text-gray-600 me-2">Rs. {{product.price}}</span><span class="text-2xl font-bold">Rs. {{product.sale.price}}</span></p>
         {% else %}
-        <p class="text-2xl font-bold">${{product.price}}</p>
+        <p class="text-2xl font-bold">Rs. {{product.price}}</p>
         {% endif %}
     </div>
 
