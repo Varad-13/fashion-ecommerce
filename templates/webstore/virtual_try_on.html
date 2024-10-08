@@ -1,7 +1,7 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-Home
+Try On {{product.product_name}}
 {% endblock %}
 
 {% block top %}
@@ -12,7 +12,6 @@ Home
         </span>
     </button>
     <p class="font-serif text-4xl font-bold">Try On</p>
-    <p class="text-2xl"><sup>(Coming Soon)</sup></p>
 </div>
 {% endblock %}
 
@@ -28,20 +27,95 @@ Home
         <div class="flex flex-row w-full flex-wrap justify-start">
             {% for avatar in avatars %}
             <img class="w-1/4 rounded-xl object-cover cursor-pointer p-1" src="{{avatar.model_photo.url}}" 
-                data-modal-target="imageModal" data-modal-toggle="imageModal" onclick="setModalImage('{{avatar.model_photo.url}}')">
+                data-modal-target="imageModal" data-modal-toggle="imageModal" onclick="setModalImage('{{avatar.model_photo.url}}', '{{avatar.id}}')">
             {%endfor%}
-            <div id="imageModal" tabindex="-1" aria-hidden="true" class="flex flex-col w-full h-screen items-center justify-center fixed top-0 left-0 px-6 z-50 hidden">
-                <img id="modalImage" class="h-auto max-w-sm rounded-lg" src="" alt="Preview Image">
-                <button type="button" class="bg-blue-700 m-2 rounded-full" data-modal-hide="imageModal">
-                    <p class="p-3 px-6 font-bold text-white">Close Preview</p>
-                </button>
+            <div id="imageModal" tabindex="-1" aria-hidden="true" class="flex flex-col w-full gap-2 h-screen items-center justify-center fixed top-0 left-0 px-6 z-50 hidden">
+                <source srcset="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4ab/512.webp" type="image/webp">
+                <img id="modalImage" class="h-auto max-w-xs rounded-lg " src="" alt="Preview Image">
+                <div id="loadingImage" class="h-auto max-w-xs rounded-lg bg-gray-300 hidden">
+                    <img class="p-16" src="https://fonts.gstatic.com/s/e/notoemoji/latest/26a1/512.gif">
+                    <p class="text-center w-full py-4 text-2xl">Generating your image, please wait</p>
+                </div>
+                <div class="flex flex-row w-full max-w-xs px-8 items-center justify-between gap-2">
+                    <button type="button" class="bg-yellow-900 p-2 rounded-full" data-modal-hide="imageModal">
+                        <span class="material-symbols-outlined text-white">
+                            undo
+                        </span>
+                    </button>
+                    <button type="button" id="generate_button" class="flex flex-row items-center justify-center gap-3 p-2 px-8 gap-2 bg-blue-700 w-52 rounded-full" onclick="">
+                        <lottie-player src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4ab/lottie.json" background="transparent" speed="0.7"  style="width: 20px; height: 20px;" autoplay></lottie-player>
+                        <p class="font-bold text-xl text-white">Generate!</p>
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
-    function setModalImage(imageUrl) {
-        document.getElementById('modalImage').src = imageUrl;
+    const productid = {{product.id}}
+    const modalImage = document.getElementById('modalImage');
+    const loadingImage = document.getElementById('loadingImage');
+    const generateButton = document.getElementById('generate_button');
+
+    function setModalImage(imageUrl, avatarid) {
+        modalImage.src = imageUrl;
+        generateButton.onclick = function() {
+            generateImage(avatarid);
+        };
+        generateButton.classList.remove('hidden');
+    }
+
+    function setModalImageFun(imageUrl, avatarid) {
+        modalImage.src = imageUrl;
+        generateButton.onclick = function() {
+            generateImage(avatarid);
+        };
+    }
+
+    function generateImage(avatarid) {
+        const data = {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'product': productid,
+            'avatar': avatarid
+        };
+        console.log(JSON.stringify(data));
+        fetch("{% url 'tryon' product.id %}", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'done') {
+                generateButton.classList.add('hidden');
+                setModalImage(data.image);
+            }
+            else if (data.status === 'generating') {
+                modalImage.classList.add('hidden');
+                loadingImage.classList.remove('hidden');
+                generateButton.classList.add('hidden');
+                const intervalId = setInterval(() => {
+                    const url = `get_tryon/${productid}/${avatarid}`;
+                    fetch(url, {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.status === 'done') {
+                            setModalImageFun(data.image);
+                            modalImage.classList.remove('hidden');
+                            loadingImage.classList.add('hidden');
+                            clearInterval(intervalId);
+                        }
+                    });
+                }, 2000);
+            }
+        })
     }
 </script>
 <script>
@@ -53,7 +127,7 @@ Home
 
 {% block bottom %}
 <div class="self-center flex flex-row w-full bg-black items-center justify-center p-2 px-6 text-gray-400 max-w-md">
-    <lottie-player src="https://fonts.gstatic.com/s/e/notoemoji/latest/2728/lottie.json" background="transparent" speed="0.7"  style="width: 36px; height: 36px;" autoplay loop></lottie-player>
-    <p class="p-4 text-white text-2xl">Try it on (coming soon)</p>
+    <lottie-player src="https://fonts.gstatic.com/s/e/notoemoji/latest/2728/lottie.json" background="transparent" speed="0.7"  style="width: 24px; height: 24px;" autoplay loop></lottie-player>
+    <p class="p-4 text-white text-xl font-bold">Try it on yourself (coming soon)</p>
 </div>
 {% endblock %}

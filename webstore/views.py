@@ -1,6 +1,17 @@
+import json
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404
 from django.views import View
 from .models import *
+from gradio_client import Client, handle_file
+import threading
+import os
+from FashionEcommerce.settings import BASE_DIR
+
+alibaba_client = Client("HumanAIGC/OutfitAnyone")
+
 
 # Create your views here.
 class index(View):
@@ -56,7 +67,10 @@ class product(View):
     
 class search(View):
     def get(self, request, search_term):
-        products = ProductItem.objects.filter()    
+        products = ProductItem.objects.filter(text__contains = search_term)
+        context = {}
+        context['products'] = products
+        return render(request, 'webstore/search.html', context)
 
 class tryon_avatar(View):
     def get(self, request, product_id):
@@ -67,23 +81,55 @@ class tryon_avatar(View):
         context['avatars'] = avatars
         return render(request, 'webstore/virtual_try_on.html', context)
     
-    def post(self, request):
-        product_id = request.POST.get('product')
-        model_id = request.POST.get('avatar')
-        model = VirtualModel.objects.get(model_name=model_id)
+    def post(self, request, product_id):
+        data = json.loads(request.body)
+        product_id = data.get('product')
+        model_id = data.get('avatar')
+        print(product_id, model_id)
+        model = VirtualModel.objects.get(id=model_id)
         product = ProductItem.objects.get(id=product_id)
         if VirtualPhotos.objects.filter(model=model, product=product).exists():
             image = VirtualPhotos.objects.get(model=model, product=product)
-            return render(request, 'partials/image', image)
+            return JsonResponse({
+                'status': 'done',
+                'image': image.photo.url
+            })
         else:
-            pass
+            thread = threading.Thread(target=self.generate_photo, args=(model, product))
+            thread.start()
+            return JsonResponse({
+                'status': 'generating'
+            })
+    def generate_photo(self, model, product):
+        result = alibaba_client.predict(
+            model_name=handle_file(str(BASE_DIR)+model.model_photo.url),
+            garment1=handle_file(str(BASE_DIR)+product.product_image.url),
+            garment2=None,
+            api_name="/get_tryon_result"
+        )
+        img_temp = NamedTemporaryFile()
+        with open(result, 'rb') as f:
+            img_temp.write(f.read())
+        img_temp.flush()
+        virtual_photo = VirtualPhotos(model=model, product=product)
+        virtual_photo.photo.save(
+            name=model.model_name + product.product_name,
+            content=File(img_temp)
+        )
+        virtual_photo.save()
 
-class get_image(View):
+
+class check_response(View):
     def get(self, request, product_id, model_id):
-        model = VirtualModel.objects.get(model_name=model_id)
+        model = VirtualModel.objects.get(id=model_id)
         product = ProductItem.objects.get(id=product_id)
         if VirtualPhotos.objects.filter(model=model, product=product).exists():
             image = VirtualPhotos.objects.get(model=model, product=product)
-            return render(request, 'partials/image', image) 
+            return JsonResponse({
+                'status': 'done',
+                'image': image.photo.url
+            })
         else:
-            return render(request, 'partials/loading')
+            return JsonResponse({
+                'status': 'generating'
+            })
