@@ -61,7 +61,7 @@ Home
                 <div class="h-full w-44 flex-shrink-0">
                     <div class="flex h-60 w-44 flex-shrink-0">
                         {% if product.virtual_photos.first %}
-                        <img class="h-auto w-auto rounded-3xl object-cover" src="{{product.virtual_photos.first.photo.url}}">
+                        <img class="h-auto w-44 rounded-3xl object-cover" src="{{product.virtual_photos.first.photo.url}}">
                         {% else %}
                         <img class="h-auto w-auto rounded-3xl object-contain" style="background: linear-gradient(to bottom, #ededed, #cdcdcd);" src="{{product.product_image.url}}">
                         {% endif %}

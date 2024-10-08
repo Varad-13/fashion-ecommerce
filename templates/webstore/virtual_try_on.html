@@ -44,7 +44,7 @@ Try On {{product.product_name}}
                     </button>
                     <button type="button" id="generate_button" class="flex flex-row items-center justify-center gap-3 p-2 px-8 gap-2 bg-blue-700 w-52 rounded-full" onclick="">
                         <lottie-player src="https://fonts.gstatic.com/s/e/notoemoji/latest/1f4ab/lottie.json" background="transparent" speed="0.7"  style="width: 20px; height: 20px;" autoplay></lottie-player>
-                        <p class="font-bold text-xl text-white">Generate!</p>
+                        <p class="font-bold text-xl text-white">Try On!</p>
                     </button>
                 </div>
             </div>
@@ -90,7 +90,7 @@ Try On {{product.product_name}}
         .then(data => {
             if (data.status === 'done') {
                 generateButton.classList.add('hidden');
-                setModalImage(data.image);
+                setModalImageFun(data.image);
             }
             else if (data.status === 'generating') {
                 modalImage.classList.add('hidden');
