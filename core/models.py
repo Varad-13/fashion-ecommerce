@@ -8,4 +8,4 @@ class Userprofile(models.Model):
     name = models.TextField()
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     email = models.EmailField(unique=True)
-    images = models.ManyToManyField(UserImages, related_name="user")
+    images = models.ManyToManyField(UserImages, related_name="user", blank=True)

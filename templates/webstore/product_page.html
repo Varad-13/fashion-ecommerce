@@ -31,12 +31,17 @@
             <p class="">
                 {{product.category}}
             </p>
+
         </div>
-        {% if product.sale %}
-        <p><span class="text-2xl ms-1 line-through text-gray-600 me-2">Rs. {{product.price}}</span><span class="text-2xl font-bold">Rs. {{product.sale.price}}</span></p>
-        {% else %}
-        <p class="text-2xl font-bold">Rs. {{product.price}}</p>
-        {% endif %}
+        <div class="flex flex-col items-end">
+            {% if product.sale %}
+            <span class="text-lg line-through text-gray-600 px-2">Rs. {{product.price}}</span>
+            <span class="text-2xl font-bold px-2">Rs. {{product.sale.price}}</span>
+            {% else %}
+            <p class="text-xl font-bold">Rs. {{product.price}}</p>
+            {% endif %}
+            <div class="bg-yellow-400 text-2xl text-white p-2 mt-2 text-center rounded-2xl w-32">Buy Now</div>
+        </div>
     </div>
 
     <div class="w-full px-6">
@@ -58,7 +63,7 @@
             
             {% endif %}
             <a href="{% url 'tryon' product.id %}" class="flex flex-col gap-2 h-auto w-1/3 p-1 items-center justify-center">
-                <div class="flex h-full w-full bg-gray-300 rounded-lg text-center items-center justify-center">
+                <div class="flex h-full py-20 w-full bg-gray-300 rounded-lg text-center items-center justify-center">
                     <span class="material-symbols-outlined">
                         add_circle
                     </span>
