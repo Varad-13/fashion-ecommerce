@@ -10,8 +10,8 @@ import threading
 import os
 from FashionEcommerce.settings import BASE_DIR
 
-alibaba_client = Client("HumanAIGC/OutfitAnyone")
-
+outfit_anyone = Client("HumanAIGC/OutfitAnyone")
+IDM_VTON = Client("yisol/IDM-VTON")
 
 # Create your views here.
 class index(View):
@@ -95,13 +95,13 @@ class tryon_avatar(View):
                 'image': image.photo.url
             })
         else:
-            thread = threading.Thread(target=self.generate_photo, args=(model, product))
+            thread = threading.Thread(target=self.idm_vton, args=(model, product))
             thread.start()
             return JsonResponse({
                 'status': 'generating'
             })
-    def generate_photo(self, model, product):
-        result = alibaba_client.predict(
+    def outfit_anyone(self, model, product):
+        result = outfit_anyone.predict(
             model_name=handle_file(str(BASE_DIR)+model.model_photo.url),
             garment1=handle_file(str(BASE_DIR)+product.product_image.url),
             garment2=None,
@@ -117,7 +117,27 @@ class tryon_avatar(View):
             content=File(img_temp)
         )
         virtual_photo.save()
-
+    def idm_vton(self, model, product):
+        result = IDM_VTON.predict(
+            dict={"background":handle_file(str(BASE_DIR)+model.model_photo.url),"layers":[],"composite":None},
+            garm_img=handle_file(str(BASE_DIR)+product.product_image.url),
+            garment_des="Hello!!",
+            is_checked=True,
+    		is_checked_crop=True,
+            denoise_steps=20,
+		    seed=106,
+            api_name="/tryon"
+        )
+        img_temp = NamedTemporaryFile()
+        with open(result[0], 'rb') as f:
+            img_temp.write(f.read())
+        img_temp.flush()
+        virtual_photo = VirtualPhotos(model=model, product=product)
+        virtual_photo.photo.save(
+            name=model.model_name + product.product_name,
+            content=File(img_temp)
+        )
+        virtual_photo.save()
 
 class check_response(View):
     def get(self, request, product_id, model_id):
