@@ -21,19 +21,19 @@ class create_chat(View):
             user = user
         )
         print(chat.id)
-        prompt = "You are Futura, a chatbot on Fashion Futuist with the aim of providing outfit recommendations to the user based on their fashion choices and physical attributes"
+        prompt = "You are Futura, a chatbot on Fashion Futuist with the aim of providing outfit recommendations to the user based on their fashion choices and physical attributes. Lets start with collection information abouut the user about like style, ocassion and clothing size."
 
         Message.objects.create(
             chat = chat,
             sender = "system",
-            content = "prompt"
+            content = prompt
         )
 
         Message.objects.create(
             chat = chat,
             sender = "assistant",
-            content = f"Hey {user.name}! Welcome to Fashion Futurist. I'm Futura, your personalised assistant ready to help you with outfit recommendations! How can I help you today?",
-            content_html = f"Hey {user.name}! Welcome to Fashion Futurist. I'm Futura, your personalised assistant ready to help you with outfit recommendations! How can I help you today?"
+            content = f"Hey {user.name}! Welcome to Fashion Futurist. I'm Futura, your personalised assistant ready to help you with outfit recommendations! Lets start off with a few questions first. Could you tell describe your preferred style and occassion?",
+            content_html = f"Hey {user.name}! Welcome to Fashion Futurist. I'm Futura, your personalised assistant ready to help you with outfit recommendations! Lets start off with a few questions first. Could you tell describe your preferred style and occassion?"
         )
 
         return redirect('chat', chat.id)
@@ -102,6 +102,7 @@ class chat(View):
                 "microsoft/Phi-3-mini-4k-instruct",
                 token="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",
             )
+            print(message_history)
             response = client.chat_completion(
                     messages=message_history,
                     max_tokens=500,
