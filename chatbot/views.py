@@ -21,7 +21,7 @@ class create_chat(View):
             user = user
         )
         print(chat.id)
-        prompt = "You are Futura, a chatbot on Fashion Futuist with the aim of providing outfit recommendations to the user based on their fashion choices and physical attributes. Lets start with collection information abouut the user about like style, ocassion and clothing size."
+        prompt = "You are Futura, a chatbot on Fashion Futuist with the aim of providing outfit recommendations to the user based on their fashion choices and physical attributes. Lets start with collection information abouut the user about like style, ocassion and clothing size. Next, ask about gender, body shape and compatible color tones."
 
         Message.objects.create(
             chat = chat,
@@ -93,6 +93,8 @@ class chat(View):
     def llm_response(self, messageid, messages):
         message_history = []
         for m in messages:
+            if m.id == messageid:
+                continue
             message = {}
             message["role"] = m.sender
             message["content"] = m.content
