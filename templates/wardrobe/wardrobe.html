@@ -1,52 +1,51 @@
 {% extends 'core/base.html' %}
 
 {% block title %}
-Futura
+Wardrobe
 {% endblock %}
 
 {% block top %}
 <div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-center max-w-md">
-    <p class="font-serif text-4xl font-bold w-full">Futura</p>
-    <a href="{% url 'create_chat' %}">
+    <input 
+        type="text" 
+        placeholder="Search..." 
+        class="w-full p-3 px-6 text-gray-700 font-bold border-none bg-gray-300 rounded-s-full" 
+    />
+    <a class="flex bg-black text-white p-2 px-6 rounded-r-full h-full text-center items-center justify-center">
         <span class="material-symbols-outlined">
-            edit
+            search
         </span>
     </a>
 </div>
 {% endblock %}
 
 {% block content %}
-<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md px-4 gap-2 items-center pb-6">
-    {% for chat in chats.all %}
-    <a class="flex w-full h-1/3 flex-shrink-0 bg-gray-600 rounded-3xl p-1" href="{% url 'chat' chat.id %}">  
-        <div class="flex flex-col w-full justify-between flex-shrink-0 p-4">
-            <p class="text-2xl font-serif font-semibold text-white">{{chat.title}}</p>
-            <p class="text-lg text-gray-200 font-light"><span class="font-serif text-white">Futura:</span> {{chat.messages.last.content|slice:"170"}}...</p>
-            <p class="text-sm text-gray-300">{{chat.created}}</p>
-        </div>
-    </a>
-    {% endfor %}
-</div>
-{% endblock %}
+<script
+	type="module"
+	src="https://gradio.s3-us-west-2.amazonaws.com/4.36.1/gradio.js"
+></script>
 
+<gradio-app class="max-w-sm self-center" src="https://levihsu-ootdiffusion.hf.space"></gradio-app>
+{% endblock %}
+    
 {% block bottom %}
 <div class="self-center flex flex-row w-full bg-black items-center justify-between p-2 px-6 text-gray-400 max-w-md">
     <a class="p-4 px-3 rounded-xl" href="{% url 'index' %}">
-        <span class="material-symbols-outlined ">
+        <span class="material-symbols-outlined text-white">
             home
         </span>
     </a>
     <a class="p-2 px-3 rounded-xl" href="{% url 'categories' %}">
-        <span class="material-symbols-outlined ">
+        <span class="material-symbols-outlined">
             dataset
         </span>
     </a>
     <a class="p-2 px-3 rounded-xl" href="{% url 'chat_page' %}">
-        <span class="material-symbols-outlined text-white">
+        <span class="material-symbols-outlined">
             forum
         </span>
     </a>
-   <a class="p-2 px-3 rounded-xl" href="{% url 'wardrobe' %}">
+    <a class="p-2 px-3 rounded-xl" href="{% url 'wardrobe' %}">
         <span class="material-symbols-outlined">
             guardian
         </span>

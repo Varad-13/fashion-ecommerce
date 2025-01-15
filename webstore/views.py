@@ -7,7 +7,6 @@ from django.views import View
 from .models import *
 from gradio_client import Client, handle_file
 import threading
-import os
 from FashionEcommerce.settings import BASE_DIR
 
 outfit_anyone = Client("HumanAIGC/OutfitAnyone")
