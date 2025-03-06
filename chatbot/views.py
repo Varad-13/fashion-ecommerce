@@ -8,6 +8,10 @@ from core.models import Userprofile
 from .models import *
 from huggingface_hub import InferenceClient
 from .parse_markdown import parse_markdown
+from webstore.models import ProductItem
+from together import Together
+
+client = Together(api_key="ad27a90a0a38ea270cbd6578b6cd7b99a4537be74269ba292294d560d766dc36")
 
 class create_chat(View):
     def get(self, request):
@@ -21,7 +25,7 @@ class create_chat(View):
             user = user
         )
         print(chat.id)
-        prompt = "You are Futura, a chatbot on Fashion Futuist with the aim of providing outfit recommendations to the user based on their fashion choices and physical attributes. Lets start with collection information abouut the user about like style, ocassion and clothing size. Next, ask about gender, body shape and compatible color tones."
+        prompt = "You are Futura, a chatbot on Fashion Futuist with the aim of providing outfit recommendations to the user based on their fashion choices and physical attributes. Lets start with collection information abouut the user about like style, ocassion and clothing size. Next, ask about gender, body shape and compatible color tones. Ask each as a separate question. After asking the user, look at the context and find them something suitable. The products must be structured properly. You must not return something out of context."
 
         Message.objects.create(
             chat = chat,
@@ -35,7 +39,18 @@ class create_chat(View):
             content = f"Hey {user.name}! Welcome to Fashion Futurist. I'm Futura, your personalised assistant ready to help you with outfit recommendations! Lets start off with a few questions first. Could you tell describe your preferred style and occassion?",
             content_html = f"Hey {user.name}! Welcome to Fashion Futurist. I'm Futura, your personalised assistant ready to help you with outfit recommendations! Lets start off with a few questions first. Could you tell describe your preferred style and occassion?"
         )
+        products = ProductItem.objects.values('id', 'product_name', 'target', 'category', 'price')
 
+        if products.exists():
+            product_info = "\n".join([
+                f"- [{p['product_name']}](/products/{p['id']}) (Target: {p['target']}, Price: ₹{p['price']})"
+                for p in products
+            ])
+            Message.objects.create(
+                chat = chat,
+                sender = "system",
+                content= f"Context:\n{product_info}."
+            )
         return redirect('chat', chat.id)
 
 class chat(View):
@@ -92,30 +107,37 @@ class chat(View):
 
     def llm_response(self, messageid, messages):
         message_history = []
+
+        # Fetch previous messages (excluding the current one)
         for m in messages:
             if m.id == messageid:
                 continue
-            message = {}
-            message["role"] = m.sender
-            message["content"] = m.content
-            message_history.append(message)
+            message_history.append({"role": m.sender, "content": m.content})
+
+        # Fetch only required fields from the database
         try:
-            client = InferenceClient(
-                "microsoft/Phi-3-mini-4k-instruct",
-                token="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",
-            )
             print(message_history)
-            response = client.chat_completion(
-                    messages=message_history,
-                    max_tokens=500,
-                    stream=False,
-                )
+        except Exception as e:
+            print(f"Error fetching products: {e}")
+
+        # LLM inference
+        try:
+            response = client.chat.completions.create(
+                model="meta-llama/Llama-3.3-70B-Instruct-Turbo-Free",
+                messages=message_history, 
+                max_tokens=500, 
+                stream=False
+            )
+
+            # Save response
             agent_message = Message.objects.get(id=messageid)
             response_message = parse_markdown(response.choices[0].message.content)
             agent_message.content = response.choices[0].message.content
             agent_message.content_html = response_message
             agent_message.save()
-        except:
+
+        except Exception as e:
+            print(f"Error generating response: {e}")
             agent_message = Message.objects.get(id=messageid)
             agent_message.sender = "system"
             agent_message.content = "Something went wrong while generating response"
@@ -137,6 +159,8 @@ def get_response(request, chat_id):
 
 def index(request):
     context = {}
+    if not request.user.is_authenticated:
+        return redirect('login')
     user = Userprofile.objects.get(user=request.user)
     chats = user.chats
     context["chats"] = chats

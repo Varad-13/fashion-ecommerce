@@ -32,6 +32,9 @@ def parse_markdown(markdown_text):
     for tag in soup.find_all('p'):
         tag['class'] = tag.get('class', []) + ['mb-2', 'text-gray-900', 'dark:text-white']
 
+    for tag in soup.find_all('a'):
+        tag['class'] = tag.get('class', []) + ['mb-2', 'text-blue-600', 'dark:text-white']
+
     for tag in soup.find_all('ul'):
         tag['class'] = tag.get('class', []) + ['list-disc', 'ml-5', 'text-gray-900', 'dark:text-white']
 
@@ -62,6 +65,6 @@ def parse_markdown(markdown_text):
             td['class'] = td.get('class', []) + ['border', 'px-4', 'py-2', 'text-gray-900', 'dark:text-white']
 
     for tag in soup.find_all('a'):
-        tag['class'] = tag.get('class', []) + ['hover:text-blue-500', 'text-gray-900', 'dark:text-white']
+        tag['class'] = tag.get('class', []) + ['hover:text-blue-500', 'text-blue-600', 'dark:text-blue-600']
 
     return str(soup)

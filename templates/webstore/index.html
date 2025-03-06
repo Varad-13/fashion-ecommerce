@@ -8,15 +8,32 @@ Home
 <div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-center max-w-md">
     <input 
         type="text" 
+        id="searchInput"
         placeholder="Search..." 
         class="w-full p-3 px-6 text-gray-700 font-bold border-none bg-gray-300 rounded-s-full" 
+        onkeypress="handleKeyPress(event)"
     />
-    <a class="flex bg-black text-white p-2 px-6 rounded-r-full h-full text-center items-center justify-center">
+    <a onclick="performSearch()" class="flex bg-black text-white p-2 px-6 rounded-r-full h-full text-center items-center justify-center cursor-pointer">
         <span class="material-symbols-outlined">
             search
         </span>
     </a>
 </div>
+
+<script>
+    function performSearch() {
+        let searchTerm = document.getElementById("searchInput").value.trim();
+        if (searchTerm) {
+            window.location.href = `/search/${encodeURIComponent(searchTerm)}/`;
+        }
+    }
+
+    function handleKeyPress(event) {
+        if (event.key === "Enter") {
+            performSearch();
+        }
+    }
+</script>
 {% endblock %}
 
 {% block content %}

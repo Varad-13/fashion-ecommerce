@@ -66,10 +66,15 @@ class product(View):
     
 class search(View):
     def get(self, request, search_term):
-        products = ProductItem.objects.filter(text__contains = search_term)
+        products = ProductItem.objects.filter(product_name__contains = search_term)
         context = {}
         context['products'] = products
         return render(request, 'webstore/search.html', context)
+
+class ProductListView(View):
+    def get(self, request):
+        products = ProductItem.objects.all().values('product_name', 'target', 'category', 'price')  # Adjust fields as needed
+        return JsonResponse(list(products), safe=False)
 
 class tryon_avatar(View):
     def get(self, request, product_id):
