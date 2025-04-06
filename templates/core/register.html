@@ -4,7 +4,7 @@
 
 {% block top %}
 <div class="self-center flex flex-col w-full mt-10 mb-4 px-4 items-center justify-center max-w-md gap-4">
-    <p class="text-4xl font-serif font-bold w-full">Signup</p>
+    <p class="text-4xl font-bold w-full">Signup</p>
     <p class="w-full text-lg">Welcome to Fashion Futurist, a clothing store with Virtual TryOn and Wardrobe Management</p>
 </div>
 {% endblock %}
@@ -22,19 +22,19 @@
             
         {% endif %}
         <div class="mb-3">
-            <p class="font-serif text-2xl">Name</p>
+            <p class="text-2xl">Name</p>
             <input name="name" class="bg-gray-300 text-xl p-2 px-6 rounded-full" id="name" placeholder="Your Name" required>    
         </div>
         <div class="mb-3">
-            <p class="font-serif text-2xl">Email</p>
+            <p class="text-2xl">Email</p>
             <input type="email" name="email" class="bg-gray-300 text-xl p-2 px-6 rounded-full" id="email" placeholder="Your Email" required>    
         </div>
         <div class="mb-3">
-            <p class="font-serif text-2xl">Password</p>
+            <p class="text-2xl">Password</p>
             <input type="password" name="password" class="bg-gray-300 text-xl p-2 px-6 rounded-full" id="password" placeholder="Your Password" required>
         </div>
         <div class="mb-3">
-            <p class="font-serif text-2xl">Confirm Password</p>
+            <p class="text-2xl">Confirm Password</p>
             <input type="password" name="confirm_password" class="bg-gray-300 text-xl p-2 px-6 rounded-full" id="confirm_password" placeholder="Retype your Password" required>
         </div>
         <button type="submit" class="bg-gray-900 text-lg p-3 px-8 text-white rounded-full mt-5">Submit</button>
@@ -44,6 +44,6 @@
 
 {% block bottom %}
 <div class="self-center flex flex-row w-full bg-black items-center justify-between p-2 px-6 text-gray-400 max-w-md">
-    <p class="p-6 w-full text-center text-xl font-medium font-serif">Already have a account? <span class="font-sans font-bold"><a href="{% url 'login' %}">Login</a></span></p>
+    <p class="p-6 w-full text-center text-xl font-medium">Already have a account? <span class="font-sans font-bold"><a href="{% url 'login' %}">Login</a></span></p>
 </div>  
 {% endblock %}

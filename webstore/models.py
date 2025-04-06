@@ -42,5 +42,5 @@ class VirtualPhotos(models.Model):
 
 class UserPhotos(models.Model):
     photo = models.ImageField(upload_to='user-photos/')
-    user = models.OneToOneField(Userprofile, on_delete=models.CASCADE, related_name='user_tryon')
-    product = models.OneToOneField(ProductItem, on_delete=models.CASCADE, related_name='user_photos')
+    user = models.ForeignKey(Userprofile, on_delete=models.CASCADE, related_name='user_tryon')
+    product = models.ForeignKey(ProductItem, on_delete=models.CASCADE, related_name='user_photos')

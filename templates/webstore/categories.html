@@ -6,7 +6,7 @@ Categories
 
 {% block top %}
 <div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-center max-w-md">
-    <p class="font-serif text-4xl font-bold w-full">Categories</p>
+    <p class="text-4xl font-bold w-full">Categories</p>
 </div>
 {% endblock %}
 
@@ -37,11 +37,6 @@ Categories
     <a class="p-2 px-3 rounded-xl" href="{% url 'chat_page' %}">
         <span class="material-symbols-outlined">
             forum
-        </span>
-    </a>
-   <a class="p-2 px-3 rounded-xl" href="{% url 'wardrobe' %}">
-        <span class="material-symbols-outlined">
-            guardian
         </span>
     </a>
     {% if request.user.is_authenticated %}

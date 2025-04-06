@@ -1,0 +1,125 @@
+{% extends 'core/base.html' %}
+
+{% block title %}
+Try It On Yourself - {{ product.product_name }}
+{% endblock %}
+
+{% block top %}
+<div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-start max-w-md">
+    <button onclick="goBack()">
+        <span class="material-symbols-outlined rounded-full me-4">
+            arrow_back_ios_new
+        </span>
+    </button>
+    <p class="text-4xl font-bold">Try It On Yourself</p>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md gap-6 items-center pb-6 px-6">
+
+    <!-- Product image -->
+    <div style="background: linear-gradient(to bottom, #ffe7b6, #ccab6a);" class="flex flex-col w-full items-center justify-center rounded-3xl">       
+        <img class="max-w-xs px-4 pb-4 h-full rounded-b-3xl object-contain" src="{{ product.product_image.url }}">
+    </div>
+
+    <!-- Upload block -->
+    <div class="w-full">
+        <p class="w-full text-2xl font-medium">Upload Your Image:</p>
+        <form id="userTryonForm" method="post" enctype="multipart/form-data" class="w-full flex flex-col items-center">
+            {% csrf_token %}
+            <input type="file" id="userImage" name="user_image" accept="image/*" class="mb-2 bg-white p-2 rounded">
+            <button type="button" id="userTryonButton" class="bg-blue-700 text-white p-2 rounded-full w-full">
+                Upload and Try On
+            </button>
+        </form>
+    </div>
+
+    <!-- Modal -->
+    <div id="imageModal" tabindex="-1" aria-hidden="true" class="flex flex-col w-full gap-2 h-screen items-center justify-center fixed top-0 left-0 px-6 z-50 hidden bg-gray-900/50">
+        <img id="modalImage" class="h-auto max-w-xs rounded-lg" src="" alt="Preview Image">
+        <div id="loadingImage" class="h-auto max-w-xs rounded-lg bg-gray-300 hidden">
+            <img class="p-16" src="https://fonts.gstatic.com/s/e/notoemoji/latest/26a1/512.gif">
+            <p class="text-center w-full py-4 text-2xl">Generating your image, please wait</p>
+        </div>
+        <div class="flex flex-row w-full max-w-xs px-8 items-center justify-between gap-2">
+            <button type="button" class="bg-yellow-900 p-2 rounded-full" onclick="closeModal()">
+                <span class="material-symbols-outlined text-white">undo</span>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    function goBack() {
+        window.history.back();
+    }
+
+    function showModal() {
+        document.getElementById("imageModal").classList.remove("hidden");
+    }
+
+    function closeModal() {
+        document.getElementById("imageModal").classList.add("hidden");
+    }
+
+    const userTryonButton = document.getElementById('userTryonButton');
+    const userImageInput = document.getElementById('userImage');
+    const modalImage = document.getElementById('modalImage');
+    const loadingImage = document.getElementById('loadingImage');
+    const productId = {{ product.id }};
+
+    userTryonButton.addEventListener('click', function () {
+        if (userImageInput.files.length === 0) {
+            alert('Please select an image to upload.');
+            return;
+        }
+
+        let formData = new FormData();
+        formData.append('user_image', userImageInput.files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        showModal();
+        loadingImage.classList.remove('hidden');
+        modalImage.classList.add('hidden');
+
+        fetch("{% url 'user_tryon' product.id %}", {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'done') {
+                modalImage.src = data.image;
+                modalImage.classList.remove('hidden');
+                loadingImage.classList.add('hidden');
+            } else if (data.status === 'generating') {
+                pollUserTryon();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            closeModal();
+        });
+    });
+
+    function pollUserTryon() {
+        const pollUrl = `{% url 'user_tryon_poll' product.id %}`;
+        const intervalId = setInterval(() => {
+            fetch(pollUrl)
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'done') {
+                    clearInterval(intervalId);
+                    modalImage.src = data.image;
+                    modalImage.classList.remove('hidden');
+                    loadingImage.classList.add('hidden');
+                }
+            });
+        }, 2000);
+    }
+</script>
+
+{% endblock %}
+

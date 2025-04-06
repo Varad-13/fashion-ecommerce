@@ -10,13 +10,11 @@ from django.core.exceptions import ValidationError
 from .models import *
 from django.contrib.auth.models import User
 
-class landing(View):
-    def get(self,request):
-        return render(request, 'core/landing.html')
-
 class index(View):
     def get(self, request):
-        return render(request, 'webstore/index.html')
+        if request.user.is_authenticated:
+            return redirect('index')
+        return render(request, 'core/index.html')
 
 class login(View):
     def get(self, request):

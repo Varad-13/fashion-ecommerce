@@ -24,7 +24,7 @@
     </div>
     <div class="flex w-full flex-row justify-between items-start px-6">
         <div>
-            <p class="font-semibold font-serif text-2xl mr-3">{{product.product_name}}</p>
+            <p class="font-semibold text-2xl mr-3">{{product.product_name}}</p>
             <p class="font-medium text-lg">
                 {{product.target}}
             </p>
@@ -85,8 +85,8 @@
 {% endblock %}
 
 {% block bottom %}
-<div class="self-center flex flex-row w-full bg-black items-center justify-center p-2 px-6 text-gray-400 max-w-md">
+<a href="{% url 'user_tryon' product.id %}" class="self-center flex flex-row w-full bg-black items-center justify-center p-2 px-6 text-gray-400 max-w-md">
     <lottie-player src="https://fonts.gstatic.com/s/e/notoemoji/latest/2728/lottie.json" background="transparent" speed="0.7"  style="width: 36px; height: 36px;" autoplay loop></lottie-player>
-    <p class="p-4 text-white text-center text-2xl">Try it on yourself <br>(coming soon)</p>
-</div>
+    <p class="p-4 text-white text-center text-2xl">Try it on yourself</p>
+</a>
 {% endblock %}

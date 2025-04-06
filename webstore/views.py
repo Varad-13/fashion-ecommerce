@@ -1,3 +1,4 @@
+from io import BytesIO
 import json
 from django.core.files import File
 from django.core.files.temp import NamedTemporaryFile
@@ -154,6 +155,88 @@ class check_response(View):
                 'image': image.photo.url
             })
         else:
+            return JsonResponse({
+                'status': 'generating'
+            })    
+
+class UserTryonView(View):
+    def get(self, request, product_id):
+        product = ProductItem.objects.get(id=product_id)
+        context = {}
+        context['product'] = product
+        return render(request, 'webstore/user_tryon.html', context)
+    
+    def post(self, request, product_id):
+        user_profile = request.user.userprofile  # Assumes authentication
+
+        if 'user_image' not in request.FILES:
+            return JsonResponse({'status': 'error', 'message': 'No user image provided.'}, status=400)
+
+        product = ProductItem.objects.get(id=product_id)
+        uploaded_file = request.FILES['user_image']
+
+        # ✅ Delete existing UserPhotos (if any)
+        UserPhotos.objects.filter(user=user_profile, product=product).delete()
+
+        # ✅ Copy uploaded file into memory before thread
+        image_data = BytesIO(uploaded_file.read())
+        image_data.name = uploaded_file.name
+        image_data.content_type = uploaded_file.content_type
+
+        thread = threading.Thread(
+            target=self.user_vton,
+            args=(user_profile, image_data, product)
+        )
+        thread.start()
+
+        return JsonResponse({'status': 'generating'})
+
+    def user_vton(self, user_profile, image_data, product):
+        # ✅ Write uploaded image to temp file
+        temp_image = NamedTemporaryFile()
+        temp_image.write(image_data.read())
+        temp_image.flush()
+
+        # ✅ Run the virtual try-on engine
+        result = IDM_VTON.predict(
+            dict={
+                "background": handle_file(temp_image.name),
+                "layers": [],
+                "composite": None
+            },
+            garm_img=handle_file(str(BASE_DIR) + product.product_image.url),
+            garment_des="Hello!!",
+            is_checked=True,
+            is_checked_crop=True,
+            denoise_steps=20,
+            seed=106,
+            api_name="/tryon"
+        )
+
+        # ✅ Save generated result to another temp file
+        img_temp = NamedTemporaryFile()
+        with open(result[0], 'rb') as f:
+            img_temp.write(f.read())
+        img_temp.flush()
+
+        # ✅ Create new UserPhotos instance (old one was deleted earlier)
+        user_photo = UserPhotos(user=user_profile, product=product)
+        user_photo.photo.save(
+            name=f"{user_profile.user.username}_{product.product_name}.jpg",
+            content=File(img_temp)
+        )
+        user_photo.save()
+
+class UserTryonPollView(View):
+    def get(self, request, product_id):
+        user_profile = request.user.userprofile  # Assumes the user is authenticated
+        try:
+            user_photo = UserPhotos.objects.get(user=user_profile, product__id=product_id)
+            return JsonResponse({
+                'status': 'done',
+                'image': user_photo.photo.url
+            })
+        except UserPhotos.DoesNotExist:
             return JsonResponse({
                 'status': 'generating'
             })

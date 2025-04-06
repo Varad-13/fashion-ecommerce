@@ -9,6 +9,8 @@ class Chat(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     def __str__(self):
         return self.title
+    class Meta:
+        ordering = ['-id']
 
 class Message(models.Model):
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE, related_name='messages')

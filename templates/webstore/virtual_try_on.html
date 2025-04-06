@@ -11,7 +11,7 @@ Try On {{product.product_name}}
             arrow_back_ios_new
         </span>
     </button>
-    <p class="font-serif text-4xl font-bold">Try On</p>
+    <p class="text-4xl font-bold">Try On</p>
 </div>
 {% endblock %}
 
@@ -125,8 +125,8 @@ Try On {{product.product_name}}
 {% endblock %}
 
 {% block bottom %}
-<div class="self-center flex flex-row w-full bg-black items-center justify-center p-2 px-6 text-gray-400 max-w-md">
-    <lottie-player src="https://fonts.gstatic.com/s/e/notoemoji/latest/2728/lottie.json" background="transparent" speed="0.7"  style="width: 24px; height: 24px;" autoplay loop></lottie-player>
-    <p class="p-4 text-white text-xl font-bold">Try it on yourself (coming soon)</p>
-</div>
+<a href="{% url 'user_tryon' product.id %}" class="self-center flex flex-row w-full bg-black items-center justify-center p-2 px-6 text-gray-400 max-w-md">
+    <lottie-player src="https://fonts.gstatic.com/s/e/notoemoji/latest/2728/lottie.json" background="transparent" speed="0.7"  style="width: 36px; height: 36px;" autoplay loop></lottie-player>
+    <p class="p-4 text-white text-center text-2xl">Try it on yourself</p>
+</a>
 {% endblock %}

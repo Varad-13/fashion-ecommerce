@@ -6,7 +6,7 @@ Futura
 
 {% block top %}
 <div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-center max-w-md">
-    <p class="font-serif text-4xl font-bold w-full">Futura</p>
+    <p class="text-4xl font-bold w-full">Futura</p>
     <a href="{% url 'create_chat' %}">
         <span class="material-symbols-outlined">
             edit
@@ -20,7 +20,7 @@ Futura
     <form method="POST" action="{% url 'create_chat' %}" class="flex flex-col w-full h-full items-center justify-center">
         {% csrf_token %}
         <div class="mb-4 w-full">
-            <label for="title" class="block text-2xl font-serif font-bold mb-2">Chat Title:</label>
+            <label for="title" class="block text-2xl font-bold mb-2">Chat Title:</label>
             <input type="text" id="title" name="title" class="shadow w-full appearance-none border rounded-full w-full p-4 text-gray-700 text-xl leading-tight focus:outline-none focus:shadow-outline" placeholder="Enter chat title">
         </div>
         {% if error %}
@@ -50,11 +50,6 @@ Futura
     <a class="p-2 px-3 rounded-xl" href="{% url 'chat_page' %}">
         <span class="material-symbols-outlined text-white">
             forum
-        </span>
-    </a>
-   <a class="p-2 px-3 rounded-xl" href="{% url 'wardrobe' %}">
-        <span class="material-symbols-outlined">
-            guardian
         </span>
     </a>
     {% if request.user.is_authenticated %}

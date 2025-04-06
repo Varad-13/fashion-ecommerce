@@ -6,7 +6,7 @@ Futura
 
 {% block top %}
 <div class="self-center flex flex-row w-full mt-10 mb-4 px-4 items-center justify-center max-w-md">
-    <p class="font-serif text-4xl font-bold w-full">Futura</p>
+    <p class="text-4xl font-bold w-full">Futura</p>
     <a href="{% url 'create_chat' %}">
         <span class="material-symbols-outlined">
             edit
@@ -16,13 +16,13 @@ Futura
 {% endblock %}
 
 {% block content %}
-<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md px-4 gap-2 items-center pb-6">
+<div class="self-center flex flex-col overflow-y-auto h-full w-full max-w-md px-4 gap-2 items-center pb-6 pt-2">
     {% for chat in chats.all %}
-    <a class="flex w-full h-1/3 flex-shrink-0 bg-gray-600 rounded-3xl p-1" href="{% url 'chat' chat.id %}">  
+    <a class="flex w-full h-1/3 flex-shrink-0 bg-gradient-to-t rounded-3xl p-1 bg-yellow-100 outline" href="{% url 'chat' chat.id %}">  
         <div class="flex flex-col w-full justify-between flex-shrink-0 p-4">
-            <p class="text-2xl font-serif font-semibold text-white">{{chat.title}}</p>
-            <p class="text-lg text-gray-200 font-light"><span class="font-serif text-white">Futura:</span> {{chat.messages.last.content|slice:"170"}}...</p>
-            <p class="text-sm text-gray-300">{{chat.created}}</p>
+            <p class="text-2xl font-semibold text-black">{{chat.title}}</p>
+            <p class="text-lg text-gray-800 font-light"><span class="text-black font-bold">Futura:</span> {{chat.messages.last.content|slice:"170"}}...</p>
+            <p class="text-sm text-gray-600">{{chat.created}}</p>
         </div>
     </a>
     {% endfor %}
@@ -44,11 +44,6 @@ Futura
     <a class="p-2 px-3 rounded-xl" href="{% url 'chat_page' %}">
         <span class="material-symbols-outlined text-white">
             forum
-        </span>
-    </a>
-   <a class="p-2 px-3 rounded-xl" href="{% url 'wardrobe' %}">
-        <span class="material-symbols-outlined">
-            guardian
         </span>
     </a>
     {% if request.user.is_authenticated %}

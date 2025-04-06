@@ -10,12 +10,12 @@
           arrow_back_ios_new
       </span>
    </button>
-   <p class="text-2xl font-serif font-bold w-full">{{ chat.title }}</p>
+   <p class="text-2xl font-bold w-full">{{ chat.title }}</p>
 </div>
 {% endblock %}
 
 {% block content %}
-<div id="message-box" class="h-full mx-1 px-3 sm:ml-64 flex-col justify-end overflow-y-auto">
+<div id="message-box" class="h-full mx-1 px-3 flex-col justify-end overflow-y-auto">
     <!-- Message Area -->
     <div id="message-area" class="message-area my-4 w-full">
       <div  id="inner-message" class="flex text-lg flex-col gap-2.5 max-w-5xl mx-auto">
@@ -27,7 +27,7 @@
  </div>
 
 
- <div class="flex p-2 justify-center sm:ml-64">
+ <div class="flex p-2 justify-center">
    <!-- Chat Box -->
    <form class="flex flex-row w-full max-w-3xl mb-2 px-2"
       hx-post="{% url 'chat' chat.id %}" 
