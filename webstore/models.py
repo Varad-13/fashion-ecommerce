@@ -44,3 +44,7 @@ class UserPhotos(models.Model):
     photo = models.ImageField(upload_to='user-photos/')
     user = models.ForeignKey(Userprofile, on_delete=models.CASCADE, related_name='user_tryon')
     product = models.ForeignKey(ProductItem, on_delete=models.CASCADE, related_name='user_photos')
+
+class Wardrobe(models.Model):
+    photo = models.ImageField(upload_to='wardrobe/')
+    user = models.ForeignKey(Userprofile, on_delete=models.CASCADE, related_name='wardrobe_items')

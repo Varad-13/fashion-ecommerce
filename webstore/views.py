@@ -240,3 +240,93 @@ class UserTryonPollView(View):
             return JsonResponse({
                 'status': 'generating'
             })
+
+class UserCustomTryonView(View):
+    def get(self, request):
+        return render(request, 'webstore/wardrobe.html')
+
+    def post(self, request):
+        user_profile = request.user.userprofile
+
+        user_file = request.FILES.get('user_image')
+        product_file = request.FILES.get('product_image')
+
+        if not user_file or not product_file:
+            return JsonResponse({'status': 'error', 'message': 'Both user and product images are required.'}, status=400)
+
+        # Copy files into memory
+        user_image_data = BytesIO(user_file.read())
+        user_image_data.name = user_file.name
+        user_image_data.content_type = user_file.content_type
+
+        product_image_data = BytesIO(product_file.read())
+        product_image_data.name = product_file.name
+        product_image_data.content_type = product_file.content_type
+
+        # ✅ Run everything in a thread, including predict
+        thread = threading.Thread(
+            target=self.run_full_pipeline_threaded,
+            args=(user_profile, user_image_data, product_image_data)
+        )
+        thread.start()
+
+        return JsonResponse({'status': 'generating'})
+
+    def run_full_pipeline_threaded(self, user_profile, user_image_data, product_image_data):
+        try:
+            # Write images to temp files
+            temp_user = NamedTemporaryFile()
+            temp_user.write(user_image_data.read())
+            temp_user.flush()
+
+            temp_product = NamedTemporaryFile()
+            temp_product.write(product_image_data.read())
+            temp_product.flush()
+
+            # ✅ Run predict inside thread (blocking version)
+            result = IDM_VTON.predict(
+                dict={
+                    "background": handle_file(temp_user.name),
+                    "layers": [],
+                    "composite": None
+                },
+                garm_img=handle_file(temp_product.name),
+                garment_des="Custom Upload",
+                is_checked=True,
+                is_checked_crop=True,
+                denoise_steps=20,
+                seed=106,
+                api_name="/tryon"
+            )
+
+            # Save output
+            self.save_to_wardrobe(user_profile, result)
+
+        except Exception as e:
+            # Optional: log this error
+            print("Threaded VTON pipeline error:", str(e))
+
+    def save_to_wardrobe(self, user_profile, result):
+        img_temp = NamedTemporaryFile()
+        with open(result[0], 'rb') as f:
+            img_temp.write(f.read())
+        img_temp.flush()
+
+        wardrobe_item = Wardrobe(user=user_profile)
+        wardrobe_item.photo.save(
+            name=f"{user_profile.user.username}_wardrobe.jpg",
+            content=File(img_temp)
+        )
+        wardrobe_item.save()
+
+class WardrobePollView(View):
+    def get(self, request):
+        user_profile = request.user.userprofile
+        try:
+            latest_item = Wardrobe.objects.filter(user=user_profile).latest('id')
+            return JsonResponse({
+                'status': 'done',
+                'image': latest_item.photo.url
+            })
+        except Wardrobe.DoesNotExist:
+            return JsonResponse({'status': 'generating'})

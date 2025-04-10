@@ -6,15 +6,16 @@ from django.contrib import messages
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import password_validation
 from django.core.exceptions import ValidationError
-
+from webstore.models import Category
 from .models import *
 from django.contrib.auth.models import User
 
 class index(View):
     def get(self, request):
+        categories = Category.objects.all()
         if request.user.is_authenticated:
             return redirect('index')
-        return render(request, 'core/index.html')
+        return render(request, 'core/index.html', {"categories": categories})
 
 class login(View):
     def get(self, request):

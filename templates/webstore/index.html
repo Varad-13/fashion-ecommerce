@@ -41,8 +41,8 @@ Home
     <div class="flex flex-row h-36 max-w-sm w-full flex-shrink-0 overflow-x-auto items-center gap-2">
         {% for category in categories %}
         <a href="{% url 'category' category.slug %}">
-            <div class="h-full w-72 flex-shrink-0">
-                <img class="h-full w-full rounded-3xl" src="{{category.thumbnail.url}}">
+            <div class="h-full w-72 flex-shrink-0 pb-1">
+                <img class="h-full w-72 rounded-3xl" src="{{category.thumbnail.url}}">
             </div>
         </a>
         {% endfor %}
